@@ -19,12 +19,12 @@ const CharacterPage: React.FC = () => {
     const loadCharacter = async () => {
       setLoading(true);
       try {
-        const response = await fetchApi<Character[]>(`/${currentTab}/${id}`);
+        const response = await fetchApi<Character>(`/${currentTab}/${id}`);
         if (response.error) {
           console.error("Error fetching character:", response.error);
           setCharacter(null);
         } else {
-          setCharacter(response.data);
+          setCharacter(response.data); // response.data is a single Character
         }
       } catch (error) {
         console.error("Error:", error);
@@ -54,13 +54,15 @@ const CharacterPage: React.FC = () => {
     "Touchdowns",
     "Yards",
   ];
-  const statsRows = character.career_stats?.map((stat: any) => ({
-    Season: stat.season || "N/A",
-    Team: stat.team || "N/A",
-    "Games Played": stat.games_played ?? "N/A",
-    Touchdowns: stat.touchdowns ?? "N/A",
-    Yards: stat.yards ?? "N/A",
-  }));
+  const statsRows: Record<any, any>[] = character.career_stats
+      ? character.career_stats.map((stat: any) => ({
+        Season: stat.season || "N/A",
+        Team: stat.team || "N/A",
+        "Games Played": stat.games_played ?? "N/A",
+        Touchdowns: stat.touchdowns ?? "N/A",
+        Yards: stat.yards ?? "N/A",
+      }))
+      : [];
 
   return (
     <div className="p-4">
